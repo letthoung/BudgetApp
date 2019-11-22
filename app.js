@@ -46,9 +46,6 @@ var budgetController = (function(){
             
             // return the new Item
             return newItem;
-        },
-        testing: function(){
-            console.log(data);
         }
     }
      
@@ -59,13 +56,19 @@ var budgetController = (function(){
 
 /*UI CONTROLLER*/
 var UIController = (function(){
+    // this object content names of DOM components, using for querySelector 
     var DOMStrings = {
         inputType: ".add__type",
         inputDescription: ".add__description",
         inputValue: ".add__value",
-        addBtn: ".add__btn"
+        addBtn: ".add__btn",
+        incomeContainer: ".income__list",
+        expensesContainer: ".expenses__list"
     }
+    
+    // return for outside accessing
     return {
+        // get all the user inputs
         getInput: function (){
             return {
             // addType will have either of two values: "inc" for + or "exp" for -
@@ -77,6 +80,43 @@ var UIController = (function(){
         
         getDOMStrings: function(){
             return DOMStrings;
+        },
+        
+        addListItem: function(obj, type){
+            var html, newHtml, element;
+            // Create HTML string with placeholder text
+            if (type === "inc"){
+                element = DOMStrings.incomeContainer;
+                html =      '<div class="item clearfix" id="income-%id%">';
+                html +=         '<div class="item__description">%description%</div>';
+                html +=         '<div class="right clearfix">';
+                html +=             '<div class="item__value">%value%</div>';
+                html +=             '<div class="item__delete">';
+                html +=                  '<button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>';
+                html +=             '</div>';
+                html +=         '</div>';
+                html +=     '</div>';
+            } else if (type === "exp") {
+                element = DOMStrings.expensesContainer;
+                html =      '<div class="item clearfix" id="expense-%id%">';
+                html +=         '<div class="item__description">%description%</div>';
+                html +=         '<div class="right clearfix">';
+                html +=             '<div class="item__value">%value%</div>';
+                html +=             '<div class="item__percentage">%percentage%</div>';
+                html +=             '<div class="item__delete">';
+                html +=                 '<button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>';
+                html +=             '</div>';
+                html +=         '</div>';
+                html +=     '</div>';
+            }
+            
+            // Replace the place holder text with actual data
+            newHtml = html.replace('%id%', obj.id);
+            newHtml = newHtml.replace('%description%', obj.description);
+            newHtml = newHtml.replace('%value%', obj.value);
+            
+            // Insert HTML to the DOM
+            document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         }
     }
 })();
@@ -87,7 +127,7 @@ var UIController = (function(){
 
 /*GLOBAL APP CONTROLLER*/
 var controller = (function(budgetCtrl, UICtrl){
-    
+    // Implementation of setting up event listener
     var setUpEventListener = function(){
         var DOMStrings = UICtrl.getDOMStrings();
         
@@ -101,13 +141,18 @@ var controller = (function(budgetCtrl, UICtrl){
         })
     };
     
+    // This function is invoked when the event listener recieve a click or Enter key
     var ctrlAddItem = function(){
+        
         //1. Get the field input data
         var input = UICtrl.getInput();
-        console.log(input);
             
         //2. Add the item to the budget controller
         var newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        
+        //3. Add the item to the UI
+        UICtrl.addListItem(newItem, input.type);
+        
         
     };
     
