@@ -1,6 +1,24 @@
 /*BUDGET CONTROLLER*/
 var budgetController = (function(){
     
+    var Expense = function(id, description, value){
+        this.id = id;
+        this.description = description;
+        this. value = value;
+    };
+    
+    var Income = function(id, description, value){
+        this.id = id;
+        this.description = description;
+        this. value = value;
+    };
+    
+    var data = {
+        allItems: {
+            exp: [],
+            inc: []
+        }
+    }
     
     
 })();
@@ -40,7 +58,18 @@ var UIController = (function(){
 /*GLOBAL APP CONTROLLER*/
 var controller = (function(budgetCtrl, UICtrl){
     
-    var DOMStrings = UICtrl.getDOMStrings();
+    var setUpEventListener = function(){
+        var DOMStrings = UICtrl.getDOMStrings();
+        
+        document.querySelector(DOMStrings.addBtn).addEventListener('click', ctrlAddItem);
+    
+        document.addEventListener('keypress', function(event){
+            // check if Enter is pressed
+            if(event.keyCode === 13 || event.which === 13){
+                ctrlAddItem();
+            }
+        })
+    };
     
     var ctrlAddItem = function(){
         //1. Get the field input data
@@ -52,13 +81,13 @@ var controller = (function(budgetCtrl, UICtrl){
         
     };
     
-    document.querySelector(DOMStrings.addBtn).addEventListener('click', ctrlAddItem);
-    
-    document.addEventListener('keypress', function(event){
-        // check if Enter is pressed
-        if(event.keyCode === 13 || event.which === 13){
-            ctrlAddItem();
+    return {
+        init: function(){
+            console.log('Started');
+            setUpEventListener();
         }
-    })
+    }
     
 })(budgetController, UIController);
+
+controller.init(); // Without this line of code, nothing happens
