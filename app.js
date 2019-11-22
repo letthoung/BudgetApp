@@ -17,10 +17,41 @@ var budgetController = (function(){
         allItems: {
             exp: [],
             inc: []
+        },
+        totals: {
+            exp: 0,
+            inc: 0
         }
     }
     
-    
+    return {
+        addItem: function(type, des, val){
+            var newItem, ID;
+            
+            // create new ID
+            if(data.allItems[type].length === 0)
+                ID = 0;
+            else
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            
+            // create newItem based on exp or inc type
+            if(type === "exp"){
+                newItem = new Expense(ID, des, val);
+            } else {
+                newItem = new Income(ID, des, val);
+            }
+            
+            // add the new Item to the list that it belongs to
+            data.allItems[type].push(newItem);
+            
+            // return the new Item
+            return newItem;
+        },
+        testing: function(){
+            console.log(data);
+        }
+    }
+     
 })();
 
 
@@ -48,7 +79,6 @@ var UIController = (function(){
             return DOMStrings;
         }
     }
-    
 })();
 
 
@@ -77,17 +107,17 @@ var controller = (function(budgetCtrl, UICtrl){
         console.log(input);
             
         //2. Add the item to the budget controller
-        
+        var newItem = budgetCtrl.addItem(input.type, input.description, input.value);
         
     };
     
     return {
         init: function(){
-            console.log('Started');
             setUpEventListener();
-        }
+        } 
     }
     
 })(budgetController, UIController);
 
-controller.init(); // Without this line of code, nothing happens
+// Without this line of code, nothing happens
+controller.init();
