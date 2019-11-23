@@ -18,12 +18,13 @@ var budgetController = (function(){
             exp: [],
             inc: []
         },
+        
         totals: {
             exp: 0,
             inc: 0
         },
-        budget: 0,
-        percentage: -1,
+        percent: -1,
+        budget: 0
     }
     
     var calculateTotal = function(type){
@@ -168,10 +169,13 @@ var UIController = (function(){
         },
         
         displayBudget: function(obj){
+            if (obj.percentage > 0)
+                document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + "%";
+            else
+                document.querySelector(DOMStrings.percentageLabel).textContent = "---";
             document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
             document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
             document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
-            document.querySelector(DOMStrings.percentageLabel).textContent = obj.precentage;
         }
     }
 })();
@@ -205,6 +209,7 @@ var controller = (function(budgetCtrl, UICtrl){
         
         //3. Display the budget to the UI
         UICtrl.displayBudget(budget);
+        console.log(budget.percentage);
     };
     
     // This function is invoked when the event listener recieve a click or Enter key
