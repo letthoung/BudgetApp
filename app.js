@@ -29,7 +29,7 @@ var budgetController = (function(){
     var calculateTotal = function(type){
         var sum = 0;
         data.allItems[type].forEach(function(current){
-            sum += current;
+            sum += current.value;
         });
         data.totals[type] = sum;
     }
@@ -95,7 +95,11 @@ var UIController = (function(){
         inputValue: ".add__value",
         addBtn: ".add__btn",
         incomeContainer: ".income__list",
-        expensesContainer: ".expenses__list"
+        expensesContainer: ".expenses__list",
+        expensesLabel: ".budget__expenses--value",
+        incomeLabel: ".budget__income--value",
+        percentageLabel: ".budget__expenses--percentage",
+        budgetLabel: ".budget__value"
     }
     
     // return for outside accessing
@@ -161,6 +165,13 @@ var UIController = (function(){
             })
             
             fieldsArray[0].focus(); //This set the focus back to the description box
+        },
+        
+        displayBudget: function(obj){
+            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            document.querySelector(DOMStrings.percentageLabel).textContent = obj.precentage;
         }
     }
 })();
@@ -193,6 +204,7 @@ var controller = (function(budgetCtrl, UICtrl){
         var budget = budgetCtrl.getBudget();
         
         //3. Display the budget to the UI
+        UICtrl.displayBudget(budget);
     };
     
     // This function is invoked when the event listener recieve a click or Enter key
