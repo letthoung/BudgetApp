@@ -140,7 +140,8 @@ var UIController = (function(){
         incomeLabel: ".budget__income--value",
         percentageLabel: ".budget__expenses--percentage",
         budgetLabel: ".budget__value",
-        container: ".container"
+        container: ".container",
+        expensesPercLabel: ".item__percentage"
     }
     
     // return for outside accessing
@@ -225,6 +226,14 @@ var UIController = (function(){
             document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
             document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
             document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+        },
+        
+        displayPercentages: function(percentages){
+            var fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
+            for (var i = 0; i < fields.length; ++i){
+                fields[i].textContent = percentages[i] + "%";
+            }
+            
         }
     }
 })();
@@ -273,7 +282,7 @@ var controller = (function(budgetCtrl, UICtrl){
         var percentages = budgetCtrl.getPercentages();
         
         //3. Update the UI with the new percentages
-        console.log(percentages);
+        UICtrl.displayPercentages(percentages);
     };
     
     // This function is invoked when the event listener recieve a click or Enter key
