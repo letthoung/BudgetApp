@@ -173,6 +173,15 @@ var UIController = (function(){
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
         },
         
+        deleteListItem: function(itemID){
+            
+            var item = document.getElementById(itemID);
+            var parent = item.parentNode;
+            
+            parent.removeChild(item);
+            
+        },
+        
         clearFields: function(){
             
             var fieldsToClear = document.querySelectorAll(DOMStrings.inputDescription + ", " + DOMStrings.inputValue);
@@ -260,7 +269,7 @@ var controller = (function(budgetCtrl, UICtrl){
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
         if(itemID){
             // split to get the item type and the item ID in the array of the item list
-            SplitID = itemID.split('-');
+            var SplitID = itemID.split('-');
             type = SplitID[0];
             ID = parseInt(SplitID[1]);
             
@@ -268,10 +277,10 @@ var controller = (function(budgetCtrl, UICtrl){
             budgetCtrl.deleteItem(type, ID);
             
             //2. Delete the item from the UI
-            
+            UICtrl.deleteListItem(itemID);
             
             //3. Update and show the new budget
-            
+            updateBudget();
             
         }
     }
