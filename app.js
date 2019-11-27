@@ -100,7 +100,8 @@ var UIController = (function(){
         expensesLabel: ".budget__expenses--value",
         incomeLabel: ".budget__income--value",
         percentageLabel: ".budget__expenses--percentage",
-        budgetLabel: ".budget__value"
+        budgetLabel: ".budget__value",
+        container: ".container"
     }
     
     // return for outside accessing
@@ -124,7 +125,7 @@ var UIController = (function(){
             // Create HTML string with placeholder text
             if (type === "inc"){
                 element = DOMStrings.incomeContainer;
-                html =      '<div class="item clearfix" id="income-%id%">';
+                html =      '<div class="item clearfix" id="inc-%id%">';
                 html +=         '<div class="item__description">%description%</div>';
                 html +=         '<div class="right clearfix">';
                 html +=             '<div class="item__value">%value%</div>';
@@ -135,7 +136,7 @@ var UIController = (function(){
                 html +=     '</div>';
             } else if (type === "exp") {
                 element = DOMStrings.expensesContainer;
-                html =      '<div class="item clearfix" id="expense-%id%">';
+                html =      '<div class="item clearfix" id="exp-%id%">';
                 html +=         '<div class="item__description">%description%</div>';
                 html +=         '<div class="right clearfix">';
                 html +=             '<div class="item__value">%value%</div>';
@@ -198,6 +199,9 @@ var controller = (function(budgetCtrl, UICtrl){
                 ctrlAddItem();
             }
         })
+        
+        document.querySelector(DOMStrings.container).addEventListener('click', ctrlDeleteItem);
+        
     };
     
     var updateBudget = function(){
@@ -234,6 +238,27 @@ var controller = (function(budgetCtrl, UICtrl){
             window.alert("Input is invalid!! Try again.");
         }
     };
+    
+    // This function is invoked when any of the delete button is clicked (using event delegation)
+    var ctrlDeleteItem =function(event) {
+        var itemID, type, ID;
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        if(itemID){
+            // split to get the item type and the item ID in the array of the item list
+            SplitID = itemID.split('-');
+            type = SplitID[0];
+            ID = SplitID[1];
+            
+            //1. Delete the item from the data structure
+            
+            
+            //2. Delete the item from the UI
+            
+            //3. Update and show the new budget
+            
+            
+        }
+    }
     
     return {
         init: function(){
