@@ -72,12 +72,28 @@ var budgetController = (function(){
                 data.percentage = Math.round(data.totals.exp/data.totals.inc * 100);
         },
         
+        deleteItem: function(type, id){
+            
+            // get the list of ids which are associate with items
+            // this maybe not efficient because we have to get this array
+            var ids = data.allItems[type].map(function(current){
+                return current.id;
+            })
+            
+            var index = ids.indexOf(id);
+            
+            if(index !== -1){
+                data.allItems[type].splice(index, 1);
+            }
+        },
+        
         getBudget: function(){
             return {
                 budget: data.budget,
                 totalInc: data.totals.inc,
                 totalExp: data.totals.exp,
-                percentage: data.percentage
+                percentage: data.percentage,
+                inc: data.allItems.inc
             }
         }
     }
@@ -213,7 +229,6 @@ var controller = (function(budgetCtrl, UICtrl){
         
         //3. Display the budget to the UI
         UICtrl.displayBudget(budget);
-        console.log(budget.percentage);
     };
     
     // This function is invoked when the event listener recieve a click or Enter key
@@ -247,12 +262,13 @@ var controller = (function(budgetCtrl, UICtrl){
             // split to get the item type and the item ID in the array of the item list
             SplitID = itemID.split('-');
             type = SplitID[0];
-            ID = SplitID[1];
+            ID = parseInt(SplitID[1]);
             
             //1. Delete the item from the data structure
-            
+            budgetCtrl.deleteItem(type, ID);
             
             //2. Delete the item from the UI
+            
             
             //3. Update and show the new budget
             
