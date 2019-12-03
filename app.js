@@ -142,6 +142,27 @@ var UIController = (function(){
         budgetLabel: ".budget__value",
         container: ".container",
         expensesPercLabel: ".item__percentage"
+    };
+    
+    // added + or - sign before the number depending on whether it is income or expense
+    // round up float to the closet thousandth
+    var formatNumber = function(num, type){
+        var numSplit, int, dec, intLength, sign;
+        num = num.toFixed(2); // num now is a String, we can use split() function as below
+
+        numSplit = num.split('.');
+        int = numSplit[0];
+        dec = numSplit[1];
+
+        intLength = int.length;
+        // This loop add comma to integer part of a float number. Little stricky!
+        for (var i = 3; i < intLength; i += 3){
+            int = int.substr(0,intLength-i) + ',' + int.substr(intLength-i, int.length - (intLength-i));
+        }
+
+        type === "inc" ? sign = "+" : sign ="-";
+
+        return sign + " " + int + "." + dec;
     }
     
     // return for outside accessing
@@ -191,7 +212,7 @@ var UIController = (function(){
             // Replace the place holder text with actual data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value,type));
             
             // Insert HTML to the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -223,9 +244,11 @@ var UIController = (function(){
                 document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + "%";
             else
                 document.querySelector(DOMStrings.percentageLabel).textContent = "---";
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            
+            var budgetType = obj.budget > 0 ? "inc" : "exp";
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget, budgetType);
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc,'inc');
+            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
         },
         
         displayPercentages: function(percentages){
@@ -293,7 +316,7 @@ var controller = (function(budgetCtrl, UICtrl){
         
         if (input.description !== "" && !isNaN(input.value) && input.value > 0){
             //2. Add the item to the budget controller
-            var newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+            var newItem = budgetCtrl.addItem(input.type, input.description, parseFloat(input.value));
 
             //3. Add the item to the UI
             UICtrl.addListItem(newItem, input.type);
